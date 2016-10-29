@@ -1,19 +1,19 @@
 <?php namespace JobApis\Jobs\Client\Test;
 
-use JobApis\Jobs\Client\Queries\ZiprecruiterQuery;
+use JobApis\Jobs\Client\Queries\JobinventoryQuery;
 use Mockery as m;
 
-class JujuQueryTest extends \PHPUnit_Framework_TestCase
+class JobinventoryQueryTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->query = new ZiprecruiterQuery();
+        $this->query = new JobinventoryQuery();
     }
 
     public function testItCanGetBaseUrl()
     {
         $this->assertEquals(
-            'https://api.ziprecruiter.com/jobs/v1',
+            'http://www.jobinventory.com/rss',
             $this->query->getBaseUrl()
         );
     }
@@ -21,7 +21,7 @@ class JujuQueryTest extends \PHPUnit_Framework_TestCase
     public function testItCanGetKeyword()
     {
         $keyword = uniqid();
-        $this->query->set('search', $keyword);
+        $this->query->set('q', $keyword);
         $this->assertEquals($keyword, $this->query->getKeyword());
     }
 
@@ -32,20 +32,20 @@ class JujuQueryTest extends \PHPUnit_Framework_TestCase
 
     public function testItReturnsTrueIfRequiredAttributesPresent()
     {
-        $this->query->set('api_key', uniqid());
+        $this->query->set('q', uniqid());
 
         $this->assertTrue($this->query->isValid());
     }
 
     public function testItCanAddAttributesToUrl()
     {
-        $this->query->set('api_key', uniqid());
-        $this->query->set('search', uniqid());
+        $this->query->set('q', uniqid());
+        $this->query->set('l', uniqid());
 
         $url = $this->query->getUrl();
 
-        $this->assertContains('api_key=', $url);
-        $this->assertContains('search=', $url);
+        $this->assertContains('q=', $url);
+        $this->assertContains('l=', $url);
     }
 
     /**
@@ -67,9 +67,9 @@ class JujuQueryTest extends \PHPUnit_Framework_TestCase
     public function testItSetsAndGetsValidAttributes()
     {
         $attributes = [
-            'search' => uniqid(),
-            'location' => uniqid(),
-            'radius_miles' => rand(1,100),
+            'q' => uniqid(),
+            'l' => uniqid(),
+            'radius' => rand(1,100),
         ];
 
         foreach ($attributes as $key => $value) {
